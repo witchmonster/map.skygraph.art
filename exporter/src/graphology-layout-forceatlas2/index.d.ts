@@ -13,6 +13,7 @@ export type ForceAtlas2Settings = {
   slowDown?: number;
   barnesHutOptimize?: boolean;
   barnesHutTheta?: number;
+  deltaThreshold?: number;
 };
 
 export type ForceAtlas2LayoutParameters<

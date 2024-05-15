@@ -1,0 +1,109 @@
+name: Deploy to GitHub Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  pages: write
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Npm cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+      - name: Yarn install cache
+        uses: c-hive/gha-yarn-cache@v2
+      - name: Install dependencies
+        run: yarn install && yarn --cwd exporter install
+      - name: Fetch graph conf
+        env:
+          CONF_URL: "${{ vars.CONF_URL }}"
+        run: |
+          mkdir -p exporter/input
+          cd exporter/input
+          wget -O config.json "$CONF_URL"/config.json
+          wget -O sub_config.json "$CONF_URL"/sub_config.json
+          cd ..
+          echo "CURRENT_GRAPH_VERSION=$(yarn getGraphVersion | grep graphVersion | cut -c 14)" >> $GITHUB_ENV
+      - name: Cache graph
+        id: cache-graph
+        uses: actions/cache@v3
+        with:
+          path: ./graph_*.json
+          key: ${{ runner.os }}-graph-${{ env.CURRENT_GRAPH_VERSION }}
+      - name: Cache search
+        id: cache-search
+        uses: actions/cache@v3
+        with:
+          path: ./exporter/input/search_*.zip
+          key: ${{ runner.os }}-search-${{ env.CURRENT_GRAPH_VERSION }}
+      - name: Cache sublayouts
+        id: cache-sublayouts
+        uses: actions/cache@v3
+        with:
+          path: ./exporter/input/sub_layouts.zip
+          key: ${{ runner.os }}-sublayouts-${{ env.CURRENT_GRAPH_VERSION }}
+      - name: Fetch graph data
+        env:
+          GRAPH_URL: "${{ vars.GRAPH_URL }}"
+        run: |
+          cd exporter/input
+          wget "$GRAPH_URL"/graph_peacock.json
+          wget "$GRAPH_URL"/sub_layouts.zip
+          cd ..
+          echo "CACHED_GRAPH_VERSION=$(yarn getGraphVersion | grep graphVersion | cut -c 14)" >> $GITHUB_ENV
+          echo $CACHED_GRAPH_VERSION
+        if: steps.cache-graph.outputs.cache-hit != 'true'
+      - name: Fetch search data
+        env:
+          SEARCH_URL: "${{ vars.SEARCH_URL }}"
+        run: |
+          cd exporter/input
+          wget "$SEARCH_URL"/search_peacock.zip
+        if: steps.cache-search.outputs.cache-hit != 'true'
+      - name: Cache layouts
+        id: cache-layouts
+        uses: actions/cache@v3
+        with:
+          path: ./exporter/out/layouts
+          key: ${{ runner.os }}-exporter-out-layouts-${{ env.CURRENT_GRAPH_VERSION }}-${{ hashFiles('exporter/out/layouts/*.json') }}
+      - name: Cache search output
+        id: cache-search-out
+        uses: actions/cache@v3
+        with:
+          path: ./exporter/out/search
+          key: ${{ runner.os }}-exporter-out-search-${{ env.CURRENT_GRAPH_VERSION }}-${{ hashFiles('exporter/out/search/*.json') }}
+      - name: Generate layout
+        run: |
+          mkdir -p exporter/out
+          cd exporter
+          yarn start
+      - name: Build
+        run: |
+          yarn build
+          mkdir -p dist/exporter/out
+          cp -rv exporter/out/* dist/exporter/out/
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'dist/'
+
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

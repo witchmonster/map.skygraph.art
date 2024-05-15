@@ -3,3 +3,7 @@
 @tailwind utilities;
 
 
+@font-face {
+    font-family: 'Noto Color Emoji';
+    src: url('assets/NotoColorEmoji-Regular.ttf');
+}

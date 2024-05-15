@@ -5,6 +5,7 @@
   "main": "dist/exporter.js",
   "scripts": {
     "build": "tsc",
+    "getGraphVersion": "tsc && node dist/getVersion.js",
     "start": "tsc && node dist/exporter.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "upload_staging": "wrangler r2 object put bsky-jazco/exported_graph_minified_test.json --file=out/exported_graph_minified.json --ct application/json",
@@ -14,14 +15,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/unzip-stream": "^0.3.4",
+    "fs-extra": "^11.2.0",
     "graphology": "^0.25.1",
-    "graphology-communities-louvain": "^2.0.1",
     "graphology-layout": "^0.6.1",
     "graphology-layout-forceatlas2": "^0.10.1",
     "iwanthue": "^2.0.0",
+    "semver": "^7.6.0",
     "ts-node": "^10.9.1",
     "tsc": "^2.0.4",
     "typescript": "^5.0.4",
+    "unzip-stream": "^0.3.4",
     "wrangler": "^2.20.0"
   },
   "devDependencies": {

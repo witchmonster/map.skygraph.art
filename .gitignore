@@ -28,3 +28,9 @@ out/
 
 .env
 graph.tsv
+*graph*.json
+config*.json
+search*.json
+search*.zip
+*.pem
+input

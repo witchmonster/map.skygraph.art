@@ -68,6 +68,8 @@ module.exports = function iterate(options, NodeMatrix, EdgeMatrix) {
 
   var RegionMatrix = [];
 
+  var delta = 0;
+
   // 1) Initializing layout data
   //-----------------------------
 
@@ -778,16 +780,18 @@ module.exports = function iterate(options, NodeMatrix, EdgeMatrix) {
         newX =
           NodeMatrix[n + NODE_X] +
           NodeMatrix[n + NODE_DX] * (nodespeed / options.slowDown);
+        delta += Math.abs(NodeMatrix[n + NODE_X] - newX);
         NodeMatrix[n + NODE_X] = newX;
 
         newY =
           NodeMatrix[n + NODE_Y] +
           NodeMatrix[n + NODE_DY] * (nodespeed / options.slowDown);
+        delta += Math.abs(NodeMatrix[n + NODE_Y] - newY);
         NodeMatrix[n + NODE_Y] = newY;
       }
     }
   }
 
   // We return the information about the layout (no need to return the matrices)
-  return {};
+  return {delta: delta};
 };

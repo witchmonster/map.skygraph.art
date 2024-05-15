@@ -6,9 +6,9 @@
  * separate thread not to block UI with heavy synchronous computations.
  */
 var workerFunction = require('./webworker.js');
-var isGraph = require('graphology-utils/is-graph');
+var isGraph = require('graphology-utils/is-graph.js');
 var createEdgeWeightGetter =
-  require('graphology-utils/getters').createEdgeWeightGetter;
+  require('graphology-utils/getters.js').createEdgeWeightGetter;
 var helpers = require('./helpers.js');
 
 var DEFAULT_SETTINGS = require('./defaults.js');

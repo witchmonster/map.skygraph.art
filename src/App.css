@@ -1,34 +1,54 @@
 .clusterLabel {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  font-family: sans-serif;
-  font-variant: small-caps;
-
-  text-shadow: 2px 2px 1px white, -2px -2px 1px white, -2px 2px 1px white,
-    2px -2px 1px white;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-variant: small-caps;
 }
 
-.sigma-hovers{
+.ellipsis {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+    overflow: hidden
+}
+
+.whiteShadow {
+    text-shadow: 1px 1px 1px white, -1px -1px 1px white, -1px 1px 1px white,
+        1px -1px 1px white;
+}
+
+.blackShadow {
+    text-shadow: 1px 1px 1px black, -1px -1px 1px black, -1px 1px 1px black,
+        1px -1px 1px black;
+}
+
+.sigma-hovers {
     z-index: 4;
 }
-.sigma-mouse{
+
+.sigma-mouse {
     z-index: 4;
 }
-.sigma-hoverNodes{
+
+.sigma-hoverNodes {
     z-index: 4;
 }
-.sigma-hoverLabels{
+
+.sigma-hoverLabels {
     z-index: 4;
 }
-.sigma-labels{
+
+.sigma-labels {
     z-index: 2;
 }
-.sigma-edges{
+
+.sigma-edges {
     z-index: 1;
 }
-.sigma-edgeLabels{
+
+.sigma-edgeLabels {
     z-index: 1;
 }
+
 .sigma-nodes {
-  z-index: 1;
+    z-index: 1;
 }

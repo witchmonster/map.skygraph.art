@@ -4,9 +4,9 @@
  *
  * Library endpoint.
  */
-var isGraph = require("graphology-utils/is-graph");
+var isGraph = require("graphology-utils/is-graph.js");
 var createEdgeWeightGetter =
-  require("graphology-utils/getters").createEdgeWeightGetter;
+  require("graphology-utils/getters.js").createEdgeWeightGetter;
 var iterate = require("./iterate.js");
 var helpers = require("./helpers.js");
 
@@ -70,7 +70,8 @@ function abstractSynchronousLayout(assign, graph, params) {
     if (i % 10 === 0) {
       console.log(`Iteration ${i}/${iterations}`);
     }
-    iterate(settings, matrices.nodes, matrices.edges);
+    const { delta } = iterate(settings, matrices.nodes, matrices.edges);
+    if (settings.deltaThreshold > 0 && delta <= settings.deltaThreshold) break;
   }
 
   // Applying
