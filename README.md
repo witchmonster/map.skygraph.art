@@ -1,8 +1,9 @@
-# [Atlas of interactions](https://skygraph.art)
+# Graph Visual Engine
 
-The BSky Atlas is a visualization of graph data.
+Web engine for layered visualization of graph data.
+Example: [skygraph.art](https://skygraph.art)
 
-Previously, Atlas by Jaz https://github.com/ericvolp12/bsky-graph graph data (graph.json) was built by the Graph Builder in [`bsky-experiments`](https://github.com/ericvolp12/bsky-experiments).
+Based on Atlas by Jaz https://github.com/ericvolp12/bsky-graph.
 
 This fork of Atlas does not support `graph.json` format as it has been reworked in a non-backward compatible way.
 
