@@ -68,7 +68,9 @@ async function generateLayouts() {
     const outputPathEnriched = path.join(layoutPath, `${layout.name + "_" ?? ""}layout.json`);
     const layoutVersionPath = path.join(versionPath, `${layout.name + "_" ?? ""}layout_version.json`);
     const searchVersionPath = path.join(versionPath, `${layout.name + "_" ?? ""}search_version.json`);
-    const configPath = path.join(versionPath, `${rootConfig.configVersion}_config.json`);
+    const configVersionedPath = path.join(versionPath, `${rootConfig.configVersion}_config.json`);
+    // const configLatestPath = path.join(outputPath, `config.json`);
+    // const subConfigLatestPath = path.join(outputPath, `sub_config.json`);
 
     var layoutVersion: any;
     var searchVersion: any;
@@ -85,13 +87,16 @@ async function generateLayouts() {
       // log(`Failed to read version file ${layoutVersionPath} or ${searchVersionPath}`)
     }
 
+    // fs.writeFileSync(configLatestPath, JSON.stringify(rootConfig.json));
+    // fs.writeFileSync(subConfigLatestPath, JSON.stringify(subLayoutConfig.json));
+
     function writeVersionFile(path: string) {
       log(`Writing version file ${path}...`);
       fs.writeFileSync(path, JSON.stringify({
         configVersion: rootConfig.configVersion.raw,
         graphVersion: rootConfig.settings.graphVersion
       }));
-      fs.writeFileSync(configPath, JSON.stringify(rootConfig.json));
+      fs.writeFileSync(configVersionedPath, JSON.stringify(rootConfig.json));
     }
 
     const layoutFileExists = fs.existsSync(outputPathEnriched);

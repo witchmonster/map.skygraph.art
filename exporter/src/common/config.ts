@@ -1,7 +1,7 @@
 import { AtlasSettings, ClusterRepPrio, ClusterConfig, BuiltAtlasLayout, InheritedAtlasLayout, MainAtlasLayout } from "./model";
-import importedJson from "../../../exporter/input/config.json"
-import importedSubLayoutsJson from "../../../exporter/input/sub_config.json"
-import { AtlasLayout, LayoutClusterGroup } from "../common/model"
+import importedJson from "../../input/config.json"
+import importedSubLayoutsJson from "../../input/sub_config.json"
+import { AtlasLayout, LayoutClusterGroup } from "./model"
 import { parse } from "semver";
 
 function buildConfig(json: any) {
