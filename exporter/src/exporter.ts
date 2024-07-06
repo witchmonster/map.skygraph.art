@@ -72,6 +72,11 @@ async function generateLayouts() {
     // const configLatestPath = path.join(outputPath, `config.json`);
     // const subConfigLatestPath = path.join(outputPath, `sub_config.json`);
 
+    const layoutFileExists = fs.existsSync(outputPathEnriched);
+    if (layout.isSubLayout && layoutFileExists) {
+      return;
+    }
+
     var layoutVersion: any;
     var searchVersion: any;
     try {
@@ -91,15 +96,15 @@ async function generateLayouts() {
     // fs.writeFileSync(subConfigLatestPath, JSON.stringify(subLayoutConfig.json));
 
     function writeVersionFile(path: string) {
-      log(`Writing version file ${path}...`);
-      fs.writeFileSync(path, JSON.stringify({
-        configVersion: rootConfig.configVersion.raw,
-        graphVersion: rootConfig.settings.graphVersion
-      }));
-      fs.writeFileSync(configVersionedPath, JSON.stringify(rootConfig.json));
+      if (!layout.isSubLayout) {
+        log(`Writing version file ${path}...`);
+        fs.writeFileSync(path, JSON.stringify({
+          configVersion: rootConfig.configVersion.raw,
+          graphVersion: rootConfig.settings.graphVersion
+        }));
+        fs.writeFileSync(configVersionedPath, JSON.stringify(rootConfig.json));
+      }
     }
-
-    const layoutFileExists = fs.existsSync(outputPathEnriched);
 
     const layoutConfigVersion: SemVer | null = parse(layoutVersion?.configVersion);
     const searchConfigVersion: SemVer | null = parse(searchVersion?.configVersion);
@@ -119,10 +124,6 @@ async function generateLayouts() {
       }
     }
 
-    if (layout.isSubLayout && layoutFileExists) {
-      return;
-    }
-
     if (layoutVersion && layoutConfigVersion && layoutFileExists
       && rootConfig.settings.graphVersion <= layoutVersion.graphVersion
       && rootConfig.configVersion.major <= layoutConfigVersion.major
@@ -139,8 +140,12 @@ async function generateLayouts() {
 
     log(`Generating layout ${layout.name} on config version: ${rootConfig.configVersion}`);
 
-
-    const graphData = getGraphDataCallback();
+    let graphData;
+    try {
+      graphData = getGraphDataCallback();
+    } catch (err) {
+      graphData = { edges: [], nodes: [] };
+    }
     const { edges, nodes } = graphData;
     // Create the graph
     const graph = new MultiDirectedGraph();
@@ -205,6 +210,7 @@ async function generateLayouts() {
 
     //generate main layouts
     async function generateMainLayouts() {
+      log('Generating main layouts');
       rootLayouts.forEach(async layout => {
         const graphData = graphDatum.get(layout.graphFilePath);
         if (graphData) {
